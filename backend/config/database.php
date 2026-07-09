@@ -59,9 +59,8 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', 'true') === 'false' ? false : true,
-            ], fn ($value) => !is_null($value)) : [],
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', file_exists(base_path('ca.pem')) ? base_path('ca.pem') : null),
+            ]) : [],
         ],
 
         'mariadb' => [
