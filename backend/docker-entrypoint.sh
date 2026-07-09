@@ -7,13 +7,12 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --show --no-interaction
 fi
 
-# Run Laravel migrations if database connection is configured
-if [ -n "$DB_HOST" ]; then
-    echo "Database host is set ($DB_HOST). Running database migrations..."
-    # We use --force because it's running in production mode
+# Run Laravel migrations only if RUN_MIGRATIONS is set to true
+if [ "$RUN_MIGRATIONS" = "true" ] && [ -n "$DB_HOST" ]; then
+    echo "RUN_MIGRATIONS is set to true. Running database migrations..."
     php artisan migrate --force --no-interaction
 else
-    echo "DB_HOST is not set. Skipping migrations."
+    echo "Skipping migrations (RUN_MIGRATIONS is not set to true or DB_HOST is empty)."
 fi
 
 # Clear and cache configurations so runtime env variables are correctly cached
