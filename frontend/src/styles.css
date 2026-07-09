@@ -298,19 +298,19 @@ div[style*="position:fixed"][style*="background:rgba(0, 0, 0,"] {
   transition: all 0.3s ease;
 }
 
-/* Botones Premium y Homogéneos del sistema */
-button {
+/* Botones Premium y Homogéneos del sistema (Excluyendo botones de tarjetas flex) */
+button:not([style*="display: flex"]):not([style*="display:flex"]) {
   font-family: inherit;
-  cursor: pointer !important;
-  font-weight: 600 !important;
+  cursor: pointer;
+  font-weight: 600;
   letter-spacing: 0.015em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.5rem !important; /* Bordes unificados */
-  border: none !important;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 0.5rem;
+  border: none;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 1. Botones Primarios (Verdes del Colegio Calama) */
