@@ -47,7 +47,24 @@
     <!-- Filtros -->
     <div
       style="background: white; border-radius: 1rem; padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0, 0, 0, 0.03);">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <!-- Buscar Alumno (Buscador Directo) -->
+        <div>
+          <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
+            Buscar Alumno
+          </label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+              <svg style="width: 1.15rem; height: 1.15rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Escribir nombre..."
+              class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+              style="height: 3rem;">
+          </div>
+        </div>
+
         <!-- Seleccionar Alumno -->
         <div>
           <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
@@ -56,8 +73,8 @@
           <select [(ngModel)]="alumnoSeleccionado" name="alumno"
             class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
             style="height: 3rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\'%234b5563\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/><path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25rem;">
-            <option [value]="null">Seleccione un alumno</option>
-            <option *ngFor="let alumno of alumnos" [value]="alumno.id">
+            <option [value]="null">Seleccione ({{ filteredAlumnos.length }} alumnos)</option>
+            <option *ngFor="let alumno of filteredAlumnos" [value]="alumno.id">
               {{ alumno.nombre }} {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}
             </option>
           </select>

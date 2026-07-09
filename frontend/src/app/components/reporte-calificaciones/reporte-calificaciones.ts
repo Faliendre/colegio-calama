@@ -24,10 +24,22 @@ export class ReporteCalificacionesComponent implements OnInit {
   gestiones: any[] = []; // ← NUEVO
   alumnoSeleccionado: number | null = null;
   gestionSeleccionada: number | null = null; // ← NUEVO
+  searchQuery: string = ''; // ← NUEVO
   reporteData: any = null;
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
+
+  get filteredAlumnos(): any[] {
+    if (!this.searchQuery) {
+      return this.alumnos;
+    }
+    const query = this.searchQuery.toLowerCase().trim();
+    return this.alumnos.filter(alumno => {
+      const nombreCompleto = `${alumno.nombre} ${alumno.apellido_paterno} ${alumno.apellido_materno || ''}`.toLowerCase();
+      return nombreCompleto.includes(query);
+    });
+  }
 
   constructor(
     private calificacionesService: CalificacionesService,
@@ -171,6 +183,7 @@ export class ReporteCalificacionesComponent implements OnInit {
   limpiar(): void {
     this.alumnoSeleccionado = null;
     this.gestionSeleccionada = null;
+    this.searchQuery = '';
     this.reporteData = null;
   }
   volverAlDashboard(): void {
