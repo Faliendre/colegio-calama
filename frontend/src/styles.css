@@ -443,6 +443,17 @@ div[style*="background-color:#fee2e2"]::before {
   font-size: 1.05rem;
 }
 
+/* Hacer que todas las tablas del sistema sean desplazables horizontalmente en celulares */
+@media (max-width: 768px) {
+  table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}
+
 
 
 
