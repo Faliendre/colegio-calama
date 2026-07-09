@@ -26,25 +26,53 @@
         style="background: #f9fafb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #e5e7eb;">
         <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Filtrar por Rango de
           Fechas</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 1rem; align-items: end;">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div>
-            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Fecha Inicio</label>
+            <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">Fecha Inicio</label>
             <input type="date" [(ngModel)]="fechaInicio"
-              style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+              class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+              style="height: 3rem;">
           </div>
           <div>
-            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Fecha Fin</label>
+            <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">Fecha Fin</label>
             <input type="date" [(ngModel)]="fechaFin"
-              style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+              class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+              style="height: 3rem;">
           </div>
-          <button (click)="aplicarFiltro()"
-            style="background: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-            Filtrar
-          </button>
-          <button (click)="limpiarFiltro()"
-            style="background: #6b7280; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-            Ver Todo
-          </button>
+          <!-- Botones -->
+          <div style="display: flex; gap: 0.5rem; width: 100%;">
+            <button (click)="aplicarFiltro()"
+              style="
+                flex: 1;
+                height: 3rem;
+                background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+                color: white;
+                border: none;
+                border-radius: 0.75rem;
+                cursor: pointer;
+                font-weight: 600;
+                box-shadow: 0 4px 6px rgba(45, 106, 79, 0.15);
+                transition: all 0.2s;
+              " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 10px rgba(45, 106, 79, 0.2)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(45, 106, 79, 0.15)'">
+              Filtrar
+            </button>
+            <button (click)="limpiarFiltro()"
+              style="
+                flex: 1;
+                height: 3rem;
+                background-color: #f3f4f6;
+                color: #4b5563;
+                border: 1px solid #e5e7eb;
+                border-radius: 0.75rem;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s;
+              " onmouseover="this.style.backgroundColor='#e5e7eb'; this.style.color='#1f2937'"
+                onmouseout="this.style.backgroundColor='#f3f4f6'; this.style.color='#4b5563'">
+              Ver Todo
+            </button>
+          </div>
         </div>
       </div>
 
