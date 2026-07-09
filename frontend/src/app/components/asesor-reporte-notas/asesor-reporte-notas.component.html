@@ -1,0 +1,145 @@
+<div style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem;">
+
+  <!-- Header -->
+  <div style="max-width: 1400px; margin: 0 auto; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button (click)="volver()"
+          style="background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1rem; cursor: pointer; backdrop-filter: blur(10px); font-weight: 600;">
+          ← Volver
+        </button>
+        <h1 style="color: white; font-size: 1.75rem; font-weight: bold; margin: 0;">Reporte de Notas</h1>
+      </div>
+      <button (click)="exportarExcel()" [disabled]="reporte.length === 0"
+        style="background: #059669; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+        📊 Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div style="background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 2rem;">
+
+      <!-- Selector de Trimestre -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <button *ngFor="let trimestre of trimestres" (click)="cambiarTrimestre(trimestre.id)"
+          [style.background]="trimestreSeleccionado === trimestre.id ? '#2d6a4f' : '#f3f4f6'"
+          [style.color]="trimestreSeleccionado === trimestre.id ? 'white' : '#374151'"
+          style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          {{ trimestre.nombre }}
+        </button>
+      </div>
+
+      <!-- Barra de búsqueda -->
+      <div *ngIf="!loading && reporte.length > 0" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+        <div style="position: relative; flex: 1; max-width: 24rem;">
+          <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input type="text" [(ngModel)]="searchText" placeholder="Buscar estudiante por nombre o RUDE..." 
+            style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #d1d5db; border-radius: 0.75rem; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;"
+            onfocus="this.style.borderColor='#764ba2'; this.style.boxShadow='0 0 0 3px rgba(118, 75, 162, 0.1)';"
+            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" style="text-align: center; padding: 3rem; color: #6b7280;">
+        <p style="font-size: 1.125rem;">Cargando reporte...</p>
+      </div>
+
+      <!-- Sin datos -->
+      <div *ngIf="!loading && reporte.length === 0" style="text-align: center; padding: 3rem;">
+        <p style="font-size: 1.125rem; color: #6b7280;">No hay calificaciones registradas para este trimestre.</p>
+      </div>
+
+      <div *ngIf="!loading && filteredReporte.length === 0 && reporte.length > 0" style="text-align: center; padding: 3rem;">
+        <p style="font-size: 1.125rem; color: #6b7280;">No se encontraron estudiantes que coincidan con la búsqueda.</p>
+      </div>
+
+      <!-- Tabla de reporte -->
+      <div *ngIf="!loading && filteredReporte.length > 0" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+          <thead>
+            <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+              <th
+                style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; position: sticky; left: 0; background: #f9fafb; z-index: 10; min-width: 250px;">
+                Estudiante
+              </th>
+              <th *ngFor="let materia of materias"
+                style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; min-width: 100px;">
+                {{ materia.materia_nombre }}
+              </th>
+              <th
+                style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; background: #fef3c7; min-width: 100px;">
+                Promedio
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alumno of filteredReporte" style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;"
+              onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='white'">
+              <td
+                style="padding: 1rem; font-weight: 500; color: #111827; position: sticky; left: 0; background: white; z-index: 5;">
+                <div>
+                  <p style="margin: 0; font-weight: 600;">
+                    {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}, {{ alumno.nombre }}
+                  </p>
+                  <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">
+                    {{ alumno.codigo_rude }}
+                  </p>
+                </div>
+              </td>
+              <td *ngFor="let notaMateria of alumno.notas_por_materia" style="padding: 1rem; text-align: center;">
+                <span *ngIf="notaMateria.promedio !== null" [style.color]="getColorNota(notaMateria.promedio)"
+                  [style.background]="getColorNota(notaMateria.promedio) + '20'"
+                  style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-weight: 600; display: inline-block;">
+                  {{ notaMateria.promedio }}
+                </span>
+                <span *ngIf="notaMateria.promedio === null" style="color: #9ca3af; font-size: 0.75rem;">
+                  S/N
+                </span>
+              </td>
+              <td style="padding: 1rem; text-align: center; background: #fffbeb;">
+                <span [style.color]="getColorNota(alumno.promedio_general)"
+                  [style.background]="getColorNota(alumno.promedio_general) + '20'"
+                  style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 1rem; display: inline-block;">
+                  {{ alumno.promedio_general }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Leyenda -->
+      <div *ngIf="!loading && filteredReporte.length > 0"
+        style="margin-top: 2rem; padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; border: 1px solid #86efac;">
+        <div
+          style="display: flex; gap: 2rem; align-items: center; font-size: 0.875rem; color: #166534; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+            <span>70-100: Aprobado</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+            <span>51-69: Regular</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+            <span>0-50: Reprobado</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 12px; height: 12px; background: #9ca3af; border-radius: 50%;"></div>
+            <span>S/N: Sin notas</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

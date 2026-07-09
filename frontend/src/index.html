@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Colegio Calama</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Render text inputs as uppercase except password/email/usernames to prevent visual flicker */
+    input[type="text"]:not([name*="username"]):not([id*="username"]):not([name*="email"]):not([id*="email"]):not([placeholder*="usuario"]):not([placeholder*="username"]):not([placeholder*="correo"]):not([placeholder*="email"]):not([type="password"]):not([type="email"]), 
+    input[type="search"],
+    input:not([type]), 
+    textarea { 
+      text-transform: uppercase; 
+    }
+  </style>
+</head>
+<body>
+  <app-root></app-root>
+
+  <!-- Global Alert Custom Override with High-End Toast System -->
+  <script>
+    (function() {
+      // 1. Toast Alert Override
+      window.alert = function(message) {
+        let container = document.getElementById('custom-alert-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'custom-alert-container';
+          container.style.cssText = `
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+          `;
+          document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        
+        let cleanMsg = message || '';
+        let type = 'info';
+        let icon = '';
+        let color = '#3b82f6'; // Blue
+        
+        if (cleanMsg.startsWith('✅') || cleanMsg.toLowerCase().includes('exito') || cleanMsg.toLowerCase().includes('éxito') || cleanMsg.toLowerCase().includes('exitosamente')) {
+          type = 'success';
+          color = '#10b981'; // Green
+          icon = '<svg style="width: 1.25rem; height: 1.25rem; color: #10b981;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>';
+          cleanMsg = cleanMsg.replace('✅', '').trim();
+        } else if (cleanMsg.startsWith('❌') || cleanMsg.toLowerCase().includes('error') || cleanMsg.toLowerCase().includes('falló') || cleanMsg.toLowerCase().includes('falla')) {
+          type = 'error';
+          color = '#ef4444'; // Red
+          icon = '<svg style="width: 1.25rem; height: 1.25rem; color: #ef4444;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
+          cleanMsg = cleanMsg.replace('❌', '').trim();
+        } else if (cleanMsg.startsWith('⚠️') || cleanMsg.toLowerCase().includes('advertencia') || cleanMsg.toLowerCase().includes('atención')) {
+          type = 'warning';
+          color = '#f59e0b'; // Amber
+          icon = '<svg style="width: 1.25rem; height: 1.25rem; color: #f59e0b;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path></svg>';
+          cleanMsg = cleanMsg.replace('⚠️', '').trim();
+        } else {
+          icon = '<svg style="width: 1.25rem; height: 1.25rem; color: #3b82f6;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path></svg>';
+        }
+
+        toast.style.cssText = `
+          min-width: 320px;
+          max-width: 440px;
+          background: rgba(255, 255, 255, 0.88);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(0, 0, 0, 0.06);
+          border-left: 4px solid ${color};
+          border-radius: 0.85rem;
+          padding: 0.9rem 1.1rem;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -6px rgba(0, 0, 0, 0.04);
+          display: flex;
+          align-items: center;
+          gap: 0.9rem;
+          pointer-events: auto;
+          opacity: 0;
+          transform: translateX(50px) translateY(0) scale(0.95);
+          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        `;
+
+        toast.innerHTML = `
+          <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 9999px;
+            background: ${color}15;
+            flex-shrink: 0;
+          ">
+            ${icon}
+          </div>
+          <div style="
+            flex: 1;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 550;
+            color: #1f2937;
+            line-height: 1.35;
+          ">
+            ${cleanMsg}
+          </div>
+          <button style="
+            background: none;
+            border: none;
+            padding: 0.3rem;
+            cursor: pointer;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: all 0.2s;
+          " onmouseover="this.style.color='#4b5563'; this.style.backgroundColor='#f3f4f6';" onmouseout="this.style.color='#9ca3af'; this.style.backgroundColor='transparent';">
+            <svg style="width: 0.9rem; height: 0.9rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        `;
+
+        container.appendChild(toast);
+
+        const removeToast = () => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(50px) scale(0.9)';
+          setTimeout(() => {
+            if (toast.parentNode) {
+              toast.parentNode.removeChild(toast);
+            }
+          }, 350);
+        };
+
+        toast.querySelector('button').addEventListener('click', removeToast);
+
+        requestAnimationFrame(() => {
+          toast.style.opacity = '1';
+          toast.style.transform = 'translateX(0) scale(1)';
+        });
+
+        setTimeout(removeToast, 4500);
+      };
+
+      // 2. Real-time automatic uppercase conversion for form inputs
+      document.addEventListener('input', function(e) {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+          const type = (e.target.type || '').toLowerCase();
+          const name = (e.target.name || '').toLowerCase();
+          const id = (e.target.id || '').toLowerCase();
+          const placeholder = (e.target.placeholder || '').toLowerCase();
+          
+          // Exempt password, email, and username inputs
+          if (
+            type !== 'password' && 
+            type !== 'email' && 
+            name !== 'username' && 
+            name !== 'email' &&
+            name !== 'password' &&
+            id !== 'username' && 
+            id !== 'email' &&
+            id !== 'password' &&
+            !placeholder.includes('usuario') &&
+            !placeholder.includes('username') &&
+            !placeholder.includes('contraseña') &&
+            !placeholder.includes('password') &&
+            !placeholder.includes('correo') &&
+            !placeholder.includes('email')
+          ) {
+            const val = e.target.value;
+            const upperVal = val.toUpperCase();
+            if (val !== upperVal) {
+              const start = e.target.selectionStart;
+              const end = e.target.selectionEnd;
+              e.target.value = upperVal;
+              if (start !== null && end !== null) {
+                e.target.setSelectionRange(start, end);
+              }
+              // Dispatch input event to notify Angular ngModel/formControl change detection
+              e.target.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          }
+        }
+      }, true);
+
+      // 3. Catch all runtime errors and display them as elegant alerts
+      window.onerror = function(message, source, lineno, colno, error) {
+        // Strip out noisy extension errors
+        if (source && (source.includes('extension') || source.includes('chrome-extension'))) {
+          return false;
+        }
+        const errorMsg = `❌ Error de Ejecución: ${message} (Línea: ${lineno || 0})`;
+        window.alert(errorMsg);
+        return false;
+      };
+
+      window.addEventListener('unhandledrejection', function(event) {
+        const reason = event.reason ? (event.reason.message || event.reason) : 'Promesa rechazada';
+        // Ignore extension Rejections
+        if (reason && (reason.toString().includes('extension') || reason.toString().includes('chrome'))) {
+          return;
+        }
+        window.alert(`❌ Error del Sistema: ${reason}`);
+      });
+    })();
+  </script>
+</body>
+</html>

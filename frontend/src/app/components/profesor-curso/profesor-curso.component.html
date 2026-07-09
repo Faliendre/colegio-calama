@@ -1,0 +1,497 @@
+<div style="min-height: 100vh; background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);">
+
+  <!-- Header del Curso -->
+  <div style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
+    <div style="max-width: 80rem; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button (click)="volver()"
+          style="background: #f3f4f6; border: none; border-radius: 0.5rem; padding: 0.75rem; cursor: pointer; display: flex; align-items: center; transition: background 0.2s;"
+          onmouseover="this.style.backgroundColor='#e5e7eb'" onmouseout="this.style.backgroundColor='#f3f4f6'">
+          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div>
+          <h1 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0;">
+            {{ grado }}{{ paralelo }} - {{ materia }}
+          </h1>
+          <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+            {{ alumnos.length }} estudiantes
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div style="max-width: 80rem; margin: 2rem auto; padding: 0 1rem;">
+    <div
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div style="display: flex; gap: 1rem;">
+        <button (click)="cambiarTab('asistencia')" [style.background]="activeTab === 'asistencia' ? '#2d6a4f' : '#f3f4f6'"
+          [style.color]="activeTab === 'asistencia' ? 'white' : '#374151'"
+          style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          📋 Asistencia
+        </button>
+        <button (click)="cambiarTab('calificaciones')"
+          [style.background]="activeTab === 'calificaciones' ? '#2d6a4f' : '#f3f4f6'"
+          [style.color]="activeTab === 'calificaciones' ? 'white' : '#374151'"
+          style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          📝 Calificaciones
+        </button>
+      </div>
+      <!-- Buscador general de alumnos -->
+      <div style="position: relative; width: 100%; max-width: 20rem;">
+        <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+          <svg style="width: 1.15rem; height: 1.15rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </span>
+        <input type="text" [(ngModel)]="searchText" placeholder="Filtrar por estudiante..." 
+          style="width: 100%; padding: 0.6rem 1rem 0.6rem 2.25rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.9rem; transition: all 0.2s;"
+          onfocus="this.style.borderColor='#2d6a4f'; this.style.boxShadow='0 0 0 3px rgba(45, 106, 79, 0.1)';"
+          onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+      </div>
+    </div>
+
+    <!-- Tab: Asistencia -->
+    <div *ngIf="activeTab === 'asistencia'"
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+
+      <!-- Header con botón Ver Historial -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">Registro de Asistencia</h2>
+        <button (click)="toggleHistorialAsistencia()"
+          style="background: #3b82f6; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+          onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'">
+          📋 Ver Historial
+        </button>
+      </div>
+
+      <!-- Modal Historial de Asistencias -->
+      <div *ngIf="mostrandoHistorialAsistencia"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div
+          style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">Historial de Asistencias</h3>
+            <button (click)="toggleHistorialAsistencia()"
+              style="background: #f3f4f6; border: none; border-radius: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.25rem; color: #6b7280;">
+              ✕
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: end;">
+            <div style="flex: 1;">
+              <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Seleccionar
+                Fecha:</label>
+              <input type="date" [(ngModel)]="fechaConsulta"
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            </div>
+            <button (click)="consultarAsistencias()" [disabled]="cargandoAsistencias"
+              style="background: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+              {{ cargandoAsistencias ? 'Buscando...' : 'Buscar' }}
+            </button>
+            <button (click)="exportarAsistenciasExcel()" [disabled]="asistenciasGuardadas.length === 0"
+              style="background: #059669; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+              📊 Exportar
+            </button>
+          </div>
+
+          <div *ngIf="cargandoAsistencias" style="text-align: center; padding: 2rem; color: #6b7280;">
+            Cargando asistencias...
+          </div>
+
+          <div *ngIf="!cargandoAsistencias && asistenciasGuardadas.length === 0"
+            style="text-align: center; padding: 2rem; color: #6b7280;">
+            No hay asistencias registradas para esta fecha.
+          </div>
+
+          <table *ngIf="!cargandoAsistencias && asistenciasGuardadas.length > 0"
+            style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Código RUDE</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let asistencia of filteredAsistenciasGuardadas" style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 1rem; color: #6b7280;">{{ asistencia.codigo_rude }}</td>
+                <td style="padding: 1rem; font-weight: 500; color: #111827;">
+                  {{ asistencia.apellido_paterno }} {{ asistencia.apellido_materno }}, {{ asistencia.nombre }}
+                </td>
+                <td style="padding: 1rem;">
+                  <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                    <button (click)="cambiarEstadoGuardado(asistencia, 'presente')" [disabled]="editandoAsistencia"
+                      [style.background]="asistencia.estado === 'presente' ? '#10b981' : '#f3f4f6'"
+                      [style.color]="asistencia.estado === 'presente' ? 'white' : '#374151'"
+                      style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                      ✓ Presente
+                    </button>
+                    <button (click)="cambiarEstadoGuardado(asistencia, 'ausente')" [disabled]="editandoAsistencia"
+                      [style.background]="asistencia.estado === 'ausente' ? '#ef4444' : '#f3f4f6'"
+                      [style.color]="asistencia.estado === 'ausente' ? 'white' : '#374151'"
+                      style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                      ✗ Ausente
+                    </button>
+                    <button (click)="cambiarEstadoGuardado(asistencia, 'licencia')" [disabled]="editandoAsistencia"
+                      [style.background]="asistencia.estado === 'licencia' ? '#6366f1' : '#f3f4f6'"
+                      [style.color]="asistencia.estado === 'licencia' ? 'white' : '#374151'"
+                      style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                      📄 Licencia
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+      <!-- Formulario de registro de asistencia  -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; color: #374151; margin: 0;">Registrar nueva asistencia</h3>
+        <input type="date" [(ngModel)]="fechaAsistencia"
+          style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+      </div>
+
+      <p *ngIf="loading" style="text-align: center; color: #6b7280;">Cargando alumnos...</p>
+
+      <table *ngIf="!loading" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Código RUDE</th>
+            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+            <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let alumno of filteredAlumnos" style="border-bottom: 1px solid #e5e7eb;">
+            <td style="padding: 1rem; color: #6b7280;">{{ alumno.codigo_rude }}</td>
+            <td style="padding: 1rem; font-weight: 500; color: #111827;">
+              {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}, {{ alumno.nombre }}
+            </td>
+            <td style="padding: 1rem;">
+              <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                <button (click)="cambiarEstado(alumno, 'presente')"
+                  [style.background]="alumno.estado === 'presente' ? '#10b981' : '#f3f4f6'"
+                  [style.color]="alumno.estado === 'presente' ? 'white' : '#374151'"
+                  style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                  ✓ Presente
+                </button>
+                <button (click)="cambiarEstado(alumno, 'ausente')"
+                  [style.background]="alumno.estado === 'ausente' ? '#ef4444' : '#f3f4f6'"
+                  [style.color]="alumno.estado === 'ausente' ? 'white' : '#374151'"
+                  style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                  ✗ Ausente
+                </button>
+                <button (click)="cambiarEstado(alumno, 'licencia')"
+                  [style.background]="alumno.estado === 'licencia' ? '#6366f1' : '#f3f4f6'"
+                  [style.color]="alumno.estado === 'licencia' ? 'white' : '#374151'"
+                  style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500;">
+                  📄 Licencia
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Botón Guardar Asistencia -->
+      <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+        <button (click)="guardarAsistencia()" [disabled]="guardandoAsistencia"
+          style="background: #2d6a4f; color: white; padding: 0.75rem 2rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background 0.2s;"
+          onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+          {{ guardandoAsistencia ? 'Guardando...' : '💾 Guardar Asistencia' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab: Calificaciones -->
+    <div *ngIf="activeTab === 'calificaciones'"
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+
+      <!-- Modal para ingresar notas -->
+      <div *ngIf="mostrandoFormNotas"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div
+          style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">
+              {{ criterioSeleccionado?.nombre }}
+            </h3>
+            <button (click)="cerrarFormNotas()"
+              style="background: #f3f4f6; border: none; border-radius: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.25rem; color: #6b7280;">
+              ✕
+            </button>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; width: 150px;">Nota
+                  (sobre 100)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cal of filteredCalificaciones" style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 1rem; color: #111827; font-weight: 500;">{{ cal.alumno_nombre }}</td>
+                <td style="padding: 1rem; text-align: center;">
+                  <input type="number" [(ngModel)]="cal.nota" min="0" max="100"
+                    style="width: 100px; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; text-align: center; font-size: 1rem;">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <button (click)="cerrarFormNotas()"
+              style="background: #f3f4f6; color: #374151; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+              onmouseover="this.style.backgroundColor='#e5e7eb'" onmouseout="this.style.backgroundColor='#f3f4f6'">
+              Cancelar
+            </button>
+            <button (click)="guardarCalificaciones()" [disabled]="guardandoCalificaciones"
+              style="background: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+              onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+              {{ guardandoCalificaciones ? 'Guardando...' : '💾 Guardar Calificaciones' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Ver/Editar Calificaciones Guardadas -->
+      <div *ngIf="mostrandoCalificacionesGuardadas"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div
+          style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+
+            <button (click)="cerrarCalificacionesGuardadas()"
+              style="background: #f3f4f6; border: none; border-radius: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.25rem; color: #6b7280; margin-left: auto;">
+              ✕
+            </button>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">
+              {{ criterioConsulta?.nombre }} - Calificaciones
+            </h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button (click)="exportarCalificacionesExcel()" [disabled]="calificacionesGuardadas.length === 0"
+                style="background: #059669; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; font-size: 0.875rem;">
+                📊 Exportar
+              </button>
+
+            </div>
+          </div>
+
+          <div *ngIf="cargandoCalificacionesGuardadas" style="text-align: center; padding: 2rem; color: #6b7280;">
+            Cargando calificaciones...
+          </div>
+
+          <div *ngIf="!cargandoCalificacionesGuardadas && calificacionesGuardadas.length === 0"
+            style="text-align: center; padding: 2rem; color: #6b7280;">
+            No hay calificaciones registradas para esta evaluación.
+          </div>
+
+          <table *ngIf="!cargandoCalificacionesGuardadas && calificacionesGuardadas.length > 0"
+            style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; width: 150px;">Nota</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cal of filteredCalificacionesGuardadas" style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 1rem; color: #111827; font-weight: 500;">
+                  {{ cal.apellido_paterno }} {{ cal.apellido_materno }}, {{ cal.nombre }}
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                  <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <input type="number" [(ngModel)]="cal.nota" (change)="editarNotaGuardada(cal)"
+                      [disabled]="editandoNota" min="0" max="100"
+                      style="width: 80px; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; text-align: center; font-size: 1rem;">
+                    <span style="color: #6b7280; font-size: 0.875rem;">/100</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Ver Promedios -->
+      <div *ngIf="mostrandoPromedios"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div
+          style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">
+                Promedios del {{ getNombreTrimestre() }}
+              </h3>
+              <p style="font-size: 0.875rem; color: #6b7280; margin: 0.25rem 0 0 0;">{{ materia }} - {{ grado }}° {{
+                paralelo }}</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button (click)="exportarPromediosExcel()" [disabled]="promedios.length === 0"
+                style="background: #059669; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; font-size: 0.875rem;">
+                📊 Exportar
+              </button>
+              <button (click)="cerrarPromedios()"
+                style="background: #f3f4f6; border: none; border-radius: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.25rem; color: #6b7280;">
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="cargandoPromedios" style="text-align: center; padding: 2rem; color: #6b7280;">
+            Calculando promedios...
+          </div>
+
+          <div *ngIf="!cargandoPromedios && promedios.length === 0"
+            style="text-align: center; padding: 2rem; color: #6b7280;">
+            No hay calificaciones registradas para calcular promedios.
+          </div>
+
+          <table *ngIf="!cargandoPromedios && promedios.length > 0" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Código RUDE</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; width: 120px;">Promedio
+                </th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; width: 150px;">
+                  Evaluaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let alumno of filteredPromedios" style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 1rem; color: #6b7280; font-size: 0.875rem;">{{ alumno.codigo_rude }}</td>
+                <td style="padding: 1rem; color: #111827; font-weight: 500;">
+                  {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}, {{ alumno.nombre }}
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                  <div
+                    style="display: inline-block; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 1.125rem;"
+                    [style.background]="getColorPromedio(alumno.promedio) + '20'"
+                    [style.color]="getColorPromedio(alumno.promedio)">
+                    {{ alumno.promedio }}/100
+                  </div>
+                </td>
+                <td style="padding: 1rem; text-align: center; color: #6b7280; font-size: 0.875rem;">
+                  {{ alumno.notas_registradas }}/{{ alumno.total_evaluaciones }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="!cargandoPromedios && promedios.length > 0"
+            style="margin-top: 1.5rem; padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; border: 1px solid #86efac;">
+            <div style="display: flex; gap: 1.5rem; align-items: center; font-size: 0.875rem; color: #166534;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                <span>70-100: Aprobado</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                <span>51-69: Regular</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                <span>0-50: Reprobado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin: 0;">Registro de Calificaciones</h2>
+        <div style="display: flex; gap: 0.5rem;">
+          <button (click)="verPromedios()"
+            style="background: #8b5cf6; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+            onmouseover="this.style.backgroundColor='#7c3aed'" onmouseout="this.style.backgroundColor='#8b5cf6'">
+            📊 Ver Promedios
+          </button>
+          <button (click)="toggleFormCriterio()"
+            style="background: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+            onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+            ➕ Nueva Evaluación
+          </button>
+        </div>
+      </div>
+
+      <!-- Selector de Trimestre -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <button *ngFor="let trimestre of trimestres" (click)="cambiarTrimestre(trimestre.id)"
+          [style.background]="trimestreSeleccionado === trimestre.id ? '#2d6a4f' : '#f3f4f6'"
+          [style.color]="trimestreSeleccionado === trimestre.id ? 'white' : '#374151'"
+          style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          {{ trimestre.nombre }}
+        </button>
+      </div>
+
+      <!-- Formulario Nueva Evaluación -->
+      <div *ngIf="mostrarFormCriterio"
+        style="background: #f9fafb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e5e7eb;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Crear Nueva Evaluación
+        </h3>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
+          <div>
+            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Nombre de la
+              Evaluación</label>
+            <input type="text" [(ngModel)]="nuevoCriterio.nombre" placeholder="Ej: Examen Final, Trabajo Práctico 1"
+              style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+          </div>
+          <button (click)="crearCriterio()" [disabled]="guardandoCriterio"
+            style="background: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+            {{ guardandoCriterio ? 'Guardando...' : 'Crear' }}
+          </button>
+        </div>
+        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+          💡 Todas las notas se ingresan sobre 100. El promedio se calcula automáticamente.
+        </p>
+      </div>
+
+      <!-- Lista de Evaluaciones -->
+      <div *ngIf="criterios.length === 0" style="text-align: center; padding: 2rem; color: #6b7280;">
+        No hay evaluaciones creadas para este trimestre. Haz clic en "Nueva Evaluación" para comenzar.
+      </div>
+
+      <div *ngIf="criterios.length > 0">
+        <div *ngFor="let criterio of criterios"
+          style="background: #f9fafb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #e5e7eb;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h4 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0;">{{ criterio.nombre }}</h4>
+              <p style="font-size: 0.875rem; color: #6b7280; margin: 0.25rem 0 0 0;">Creado: {{ criterio.fecha_creacion
+                }}
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button (click)="prepararCalificaciones(criterio)"
+                style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'">
+                📝 Ingresar Notas
+              </button>
+              <button (click)="verCalificacionesGuardadas(criterio)"
+                style="background: #10b981; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                onmouseover="this.style.backgroundColor='#059669'" onmouseout="this.style.backgroundColor='#10b981'">
+                👁️ Ver Notas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

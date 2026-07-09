@@ -1,0 +1,214 @@
+@startuml Colegio_Calama_DB
+
+' Configuración de estilos
+skinparam linetype ortho
+skinparam backgroundColor #FEFEFE
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #495057
+
+' Tabla: users
+entity "users" as users {
+  * id : bigint <<PK>>
+  --
+  * username : varchar(50) <<UNIQUE>>
+  * password : varchar(255)
+  * nombre : varchar(100)
+  * apellido_paterno : varchar(100)
+  * apellido_materno : varchar(100)
+  * role : enum('administrador', 'profesor', 'asesor')
+  * activo : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: gestion_academica
+entity "gestion_academica" as gestion {
+  * id : bigint <<PK>>
+  --
+  * anio : int
+  * fecha_inicio : date
+  * fecha_fin : date
+  * activo : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: trimestres
+entity "trimestres" as trimestres {
+  * id : bigint <<PK>>
+  --
+  * gestion_academica_id : bigint <<FK>>
+  * numero : int
+  * nombre : varchar(50)
+  * fecha_inicio : date
+  * fecha_fin : date
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: cursos
+entity "cursos" as cursos {
+  * id : bigint <<PK>>
+  --
+  * grado : enum('1ro', '2do', '3ro', '4to', '5to', '6to')
+  * paralelo : enum('A', 'B', 'C', 'D', 'E')
+  * gestion_academica_id : bigint <<FK>>
+  * asesor_id : bigint <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: materias
+entity "materias" as materias {
+  * id : bigint <<PK>>
+  --
+  * nombre : varchar(100)
+  * codigo : varchar(20)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: alumnos
+entity "alumnos" as alumnos {
+  * id : bigint <<PK>>
+  --
+  * codigo_rude : varchar(50) <<UNIQUE>>
+  * nombre : varchar(100)
+  * apellido_paterno : varchar(100)
+  * apellido_materno : varchar(100)
+  * fecha_nacimiento : date
+  * genero : enum('M', 'F')
+  direccion : text
+  telefono : varchar(20)
+  * activo : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: matriculas
+entity "matriculas" as matriculas {
+  * id : bigint <<PK>>
+  --
+  * alumno_id : bigint <<FK>>
+  * curso_id : bigint <<FK>>
+  * gestion_academica_id : bigint <<FK>>
+  * fecha_matricula : date
+  * estado : enum('activo', 'retirado', 'trasladado')
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: horarios
+entity "horarios" as horarios {
+  * id : bigint <<PK>>
+  --
+  * curso_id : bigint <<FK>>
+  * materia_id : bigint <<FK>>
+  * dia_semana : int
+  * hora_inicio : time
+  * hora_fin : time
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: asignaciones_profesor
+entity "asignaciones_profesor" as asignaciones {
+  * id : bigint <<PK>>
+  --
+  * profesor_id : bigint <<FK>>
+  * curso_id : bigint <<FK>>
+  * materia_id : bigint <<FK>>
+  * gestion_academica_id : bigint <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: criterios_evaluacion
+entity "criterios_evaluacion" as criterios {
+  * id : bigint <<PK>>
+  --
+  * asignacion_profesor_id : bigint <<FK>>
+  * trimestre_id : bigint <<FK>>
+  * nombre : varchar(100)
+  * ponderacion : decimal(5,2)
+  * fecha_creacion : date
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: notas
+entity "notas" as notas {
+  * id : bigint <<PK>>
+  --
+  * criterio_evaluacion_id : bigint <<FK>>
+  * alumno_id : bigint <<FK>>
+  * nota : decimal(5,2)
+  observaciones : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: notas_trimestrales
+entity "notas_trimestrales" as notas_trim {
+  * id : bigint <<PK>>
+  --
+  * matricula_id : bigint <<FK>>
+  * asignacion_profesor_id : bigint <<FK>>
+  * trimestre_id : bigint <<FK>>
+  * nota_final : decimal(5,2)
+  * aprobado : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: asistencias
+entity "asistencias" as asistencias {
+  * id : bigint <<PK>>
+  --
+  * alumno_id : bigint <<FK>>
+  * asignacion_profesor_id : bigint <<FK>>
+  * fecha : date
+  * estado : enum('presente', 'ausente', 'licencia')
+  observaciones : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Tabla: promedios_anuales
+entity "promedios_anuales" as promedios {
+  * id : bigint <<PK>>
+  --
+  * alumno_id : bigint <<FK>>
+  * gestion_academica_id : bigint <<FK>>
+  * promedio_anual : decimal(5,2)
+  posicion_general : int
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+' Relaciones
+trimestres }o--|| gestion : "pertenece a"
+cursos }o--|| gestion : "pertenece a"
+cursos }o--|| users : "tiene asesor"
+matriculas }o--|| alumnos : "matricula"
+matriculas }o--|| cursos : "en curso"
+matriculas }o--|| gestion : "en gestión"
+horarios }o--|| cursos : "para curso"
+horarios }o--|| materias : "dicta materia"
+asignaciones }o--|| users : "profesor asignado"
+asignaciones }o--|| cursos : "dicta en curso"
+asignaciones }o--|| materias : "dicta materia"
+asignaciones }o--|| gestion : "en gestión"
+criterios }o--|| asignaciones : "pertenece a"
+criterios }o--|| trimestres : "en trimestre"
+notas }o--|| criterios : "califica criterio"
+notas }o--|| alumnos : "califica alumno"
+notas_trim }o--|| matriculas : "nota de"
+notas_trim }o--|| asignaciones : "en materia"
+notas_trim }o--|| trimestres : "del trimestre"
+asistencias }o--|| alumnos : "registra"
+asistencias }o--|| asignaciones : "en clase"
+promedios }o--|| alumnos : "promedio de"
+promedios }o--|| gestion : "en gestión"
+
+@enduml

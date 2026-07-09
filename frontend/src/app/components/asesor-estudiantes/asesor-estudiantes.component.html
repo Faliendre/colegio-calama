@@ -1,0 +1,122 @@
+<div style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem;">
+
+  <!-- Header -->
+  <div style="max-width: 1400px; margin: 0 auto; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button (click)="volver()"
+          style="background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1rem; cursor: pointer; backdrop-filter: blur(10px); font-weight: 600;">
+          ← Volver
+        </button>
+        <h1 style="color: white; font-size: 1.75rem; font-weight: bold; margin: 0;">Mis Estudiantes</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div style="background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 2rem;">
+
+      <!-- Loading -->
+      <div *ngIf="loading" style="text-align: center; padding: 3rem; color: #6b7280;">
+        <p style="font-size: 1.125rem;">Cargando estudiantes...</p>
+      </div>
+
+      <!-- Sin estudiantes -->
+      <div *ngIf="!loading && estudiantes.length === 0" style="text-align: center; padding: 3rem;">
+        <p style="font-size: 1.125rem; color: #6b7280;">No hay estudiantes registrados en tu curso.</p>
+      </div>
+
+      <!-- Tabla de estudiantes -->
+      <div *ngIf="!loading && estudiantes.length > 0">
+        <div style="margin-bottom: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+          <p style="font-size: 1rem; color: #6b7280; margin: 0;">
+            Total de estudiantes: <strong style="color: #111827;">{{ filteredEstudiantes.length }}</strong>
+          </p>
+          <div style="position: relative; width: 100%; max-width: 24rem;">
+            <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+              <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input type="text" [(ngModel)]="searchText" placeholder="Buscar estudiante por nombre o RUDE..." 
+              style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #d1d5db; border-radius: 0.75rem; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;"
+              onfocus="this.style.borderColor='#764ba2'; this.style.boxShadow='0 0 0 3px rgba(118, 75, 162, 0.1)';"
+              onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+          </div>
+        </div>
+
+        <div *ngIf="filteredEstudiantes.length === 0" style="text-align: center; padding: 3rem; color: #6b7280;">
+          <p style="font-size: 1.125rem;">No se encontraron estudiantes que coincidan con la búsqueda.</p>
+        </div>
+
+        <div *ngIf="filteredEstudiantes.length > 0" style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                <th
+                  style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem; text-transform: uppercase;">
+                  #</th>
+                <th
+                  style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem; text-transform: uppercase;">
+                  Código RUDE</th>
+                <th
+                  style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem; text-transform: uppercase;">
+                  Estudiante</th>
+                <th
+                  style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; font-size: 0.875rem; text-transform: uppercase;">
+                  Género</th>
+                <th
+                  style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; font-size: 0.875rem; text-transform: uppercase;">
+                  Edad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let estudiante of filteredEstudiantes; let i = index"
+                style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;"
+                onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='white'">
+                <td style="padding: 1rem; color: #6b7280; font-weight: 500;">{{ i + 1 }}</td>
+                <td style="padding: 1rem; color: #6b7280; font-size: 0.875rem;">{{ estudiante.codigo_rude }}</td>
+                <td style="padding: 1rem;">
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div
+                      style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1rem;">
+                      {{ estudiante.nombre.charAt(0) }}{{ estudiante.apellido_paterno.charAt(0) }}
+                    </div>
+                    <div>
+                      <p style="margin: 0; font-weight: 600; color: #111827; font-size: 0.9375rem;">
+                        {{ estudiante.apellido_paterno }} {{ estudiante.apellido_materno }}, {{ estudiante.nombre }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                  <span [style.background]="estudiante.genero === 'M' ? '#dbeafe' : '#fce7f3'"
+                    [style.color]="estudiante.genero === 'M' ? '#1e40af' : '#be185d'"
+                    style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500;">
+                    {{ estudiante.genero === 'M' ? 'Masculino' : 'Femenino' }}
+                  </span>
+                </td>
+                <td style="padding: 1rem; text-align: center; color: #374151; font-weight: 500;">
+                  {{ calcularEdad(estudiante.fecha_nacimiento) }} años
+                </td>
+                <td style="padding: 1rem; text-align: center; color: #6b7280; font-size: 0.875rem;">
+                  {{ estudiante.fecha_matricula | date:'dd/MM/yyyy' }}
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                  <button [routerLink]="['/asesor/estudiante', estudiante.id]"
+                    style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500; font-size: 0.875rem; transition: background 0.2s;"
+                    onmouseover="this.style.backgroundColor='#2563eb'"
+                    onmouseout="this.style.backgroundColor='#3b82f6'">
+                    Ver Ficha
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

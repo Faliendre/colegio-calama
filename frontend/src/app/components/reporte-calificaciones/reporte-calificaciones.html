@@ -1,0 +1,164 @@
+<div style="padding: 2rem; background-color: #f9fafb; min-height: 100vh;">
+  <!-- Botón Volver -->
+  <div style="margin-bottom: 1.5rem;">
+    <button (click)="volverAlDashboard()" style="
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)'"
+      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Volver al Dashboard
+    </button>
+  </div>
+
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: bold; color: #111827; margin-bottom: 0.5rem;">
+        Reporte de Calificaciones
+      </h1>
+      <p style="color: #6b7280;">Consulta las notas por trimestre</p>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="successMessage"
+      style="margin-bottom: 1rem; padding: 1rem; background-color: #d1fae5; color: #065f46; border-radius: 0.5rem; border-left: 4px solid #10b981;">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage"
+      style="margin-bottom: 1rem; padding: 1rem; background-color: #fee2e2; color: #991b1b; border-radius: 0.5rem; border-left: 4px solid #ef4444;">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Filtros -->
+    <div
+      style="background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: flex-end;">
+        <!-- Seleccionar Alumno -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+            Alumno *
+          </label>
+          <select [(ngModel)]="alumnoSeleccionado" name="alumno"
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            <option [value]="null">Seleccione un alumno</option>
+            <option *ngFor="let alumno of alumnos" [value]="alumno.id">
+              {{ alumno.nombre }} {{ alumno.apellido_paterno }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Gestión Académica -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+            Gestión Académica
+          </label>
+          <select [(ngModel)]="gestionSeleccionada" name="gestion"
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            <option [value]="null">Gestión activa</option>
+            <option *ngFor="let gestion of gestiones" [value]="gestion.id">
+              {{ gestion.anio }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <div style="display: flex; gap: 0.5rem;">
+          <button (click)="generarReporte()" [disabled]="isLoading"
+            style="padding: 0.75rem 1.5rem; background-color: #2563eb; color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer;">
+            {{ isLoading ? 'Generando...' : 'Generar' }}
+          </button>
+          <button (click)="limpiar()"
+            style="padding: 0.75rem 1.5rem; background-color: #6b7280; color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer;">
+            Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reporte -->
+    <div *ngIf="reporteData">
+      <!-- Botones de Exportación -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <button (click)="exportarPDF()"
+          style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: #dc2626; color: white; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
+          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          Descargar PDF
+        </button>
+
+        <button (click)="exportarExcel()"
+          style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: #16a34a; color: white; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#15803d'" onmouseout="this.style.backgroundColor='#16a34a'">
+          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Descargar Excel
+        </button>
+      </div>
+
+      <!-- Tabla de Calificaciones -->
+      <div
+        style="background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto;">
+        <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1rem;">
+          Calificaciones
+        </h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: #374151;">Materia</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Trimestre 1</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Trimestre 2</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Trimestre 3</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Promedio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let materia of reporteData.materias; let i = index"
+              [style.background-color]="i % 2 === 0 ? '#ffffff' : '#f9fafb'" style="border-bottom: 1px solid #e5e7eb;">
+              <td style="padding: 0.75rem; font-weight: 500; color: #111827;">{{ materia.nombre }}</td>
+              <td style="padding: 0.75rem; text-align: center; color: #111827;">
+                {{ materia.trimestres[0] | number:'1.1-2' }}
+              </td>
+              <td style="padding: 0.75rem; text-align: center; color: #111827;">
+                {{ materia.trimestres[1] | number:'1.1-2' }}
+              </td>
+              <td style="padding: 0.75rem; text-align: center; color: #111827;">
+                {{ materia.trimestres[2] | number:'1.1-2' }}
+              </td>
+              <td style="padding: 0.75rem; text-align: center; font-weight: 600; color: #111827;">
+                {{ calcularPromedio(materia.trimestres) | number:'1.2-2' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sin resultados -->
+    <div *ngIf="!isLoading && !reporteData"
+      style="background: white; border-radius: 0.75rem; padding: 3rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <p style="color: #6b7280; font-size: 1.125rem;">
+        Seleccione un alumno para generar el reporte
+      </p>
+    </div>
+  </div>
+</div>

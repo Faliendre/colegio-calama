@@ -1,0 +1,234 @@
+<div class="min-h-screen" style="background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);">
+  <!-- Header -->
+  <header style="
+  background:white;
+  box-shadow:0 1px 3px 0 rgba(0,0,0,0.08);
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:30;
+">
+    <div style="
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4.7rem;
+  ">
+      <!-- Logo y título -->
+      <div style="display: flex; align-items: center;">
+        <div style="
+        width: 3.5rem;
+        height: 3.5rem;
+        background: #fff;
+        border-radius: 0.9rem;
+        box-shadow:0 2px 7px rgba(55,100,65,.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right:1.1rem;
+        overflow: hidden;
+      ">
+          <img src="assets/logo_calama.png" alt="Logo Colegio Calama" style="
+                width: 92%; height: 92%;
+                object-fit: contain;
+                border-radius: 0.6rem;
+             ">
+        </div>
+        <div>
+          <h1 style="font-size: 1.55rem; font-weight: bold; color: #111827; margin: 0;">
+            Panel Asesor
+          </h1>
+          <p style="font-size: 1.04rem; color: #64748b; margin: 0; font-weight: 500;">
+            Colegio Nacional Calama
+          </p>
+        </div>
+      </div>
+      <!-- Usuario y salir -->
+      <div style="display: flex; align-items: center; gap: 1.2rem;">
+        <div style="text-align: right;">
+          <p style="font-size: 1.02rem; font-weight: 600; color: #102a43; margin: 0;">
+            {{ userName }}
+          </p>
+          <p style="font-size: 0.86rem; color: #6b7280; margin:0 0 0.08rem 0;">
+            Asesor
+          </p>
+        </div>
+        <button (click)="logout()" style="
+          background-color: #2d6a4f;
+          color: white;
+          padding: 0.5rem 1.25rem;
+          border-radius: 0.7rem;
+          border: none;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          box-shadow: 0 2px 8px rgba(60,90,70,0.11);
+          transition: background .17s;
+        " onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.1rem;" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Salir
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main style="max-width: 80rem; margin: 0 auto; padding: 2rem 1rem;">
+
+    <!-- Loading -->
+    <div *ngIf="loading" style="text-align: center; padding: 3rem;">
+      <p style="font-size: 1.125rem; color: #6b7280;">Cargando información...</p>
+    </div>
+
+    <!-- Cards -->
+    <div *ngIf="!loading" class="grid grid-cols-1"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+
+      <!-- Card 1: Mi Curso -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #1b4332; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.25rem;">Mi Curso</p>
+            <p *ngIf="cursoInfo" style="font-size: 1.5rem; font-weight: bold; color: #111827; margin: 0;">
+              {{ cursoInfo.grado }}° {{ cursoInfo.paralelo }}
+            </p>
+            <p *ngIf="!cursoInfo" style="font-size: 1.875rem; font-weight: bold; color: #111827; margin: 0;">
+              Sin asignar
+            </p>
+          </div>
+          <div style="background-color: #dcfce7; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #14532d;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2" stroke-width="2" />
+              <path stroke-width="2" d="M16 3v4M8 3v4" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Estudiantes -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #3b82f6; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.25rem;">Estudiantes</p>
+            <p style="font-size: 1.875rem; font-weight: bold; color: #111827; margin: 0;">{{ stats.total_estudiantes }}
+            </p>
+          </div>
+          <div style="background-color: #dbeafe; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #2563eb;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Promedio -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #fbbf24; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.25rem;">Promedio General
+            </p>
+            <p style="font-size: 1.875rem; font-weight: bold; color: #111827; margin: 0;">{{ stats.promedio_general }}
+            </p>
+          </div>
+          <div style="background-color: #fef9c3; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #fbbf24;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div *ngIf="!loading" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+      <button (click)="verEstudiantes()"
+        style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 0.75rem; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center;">
+        <span style="font-size: 1.5rem;">👥</span>
+        <p style="margin: 0.5rem 0 0 0; font-weight: 600; color: #166534;">Ver Estudiantes</p>
+      </button>
+
+      <button (click)="verReporteNotas()"
+        style="background: #eff6ff; border: 1px solid #93c5fd; border-radius: 0.75rem; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center;">
+        <span style="font-size: 1.5rem;">📊</span>
+        <p style="margin: 0.5rem 0 0 0; font-weight: 600; color: #1e40af;">Reporte de Notas</p>
+      </button>
+
+      <button (click)="verAsistencia()"
+        style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 0.75rem; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center;">
+        <span style="font-size: 1.5rem;">📋</span>
+        <p style="margin: 0.5rem 0 0 0; font-weight: 600; color: #92400e;">Asistencia</p>
+      </button>
+    </div>
+
+    <!-- Recent Activity -->
+    <div *ngIf="!loading"
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 0.25rem;">Actividad Reciente</h2>
+      
+      <div *ngFor="let act of recentActivity"
+        style="display: flex; align-items: center; padding: 0.85rem 1rem; background-color: #f9fafb; border-radius: 0.75rem; border: 1px solid #f3f4f6; transition: all 0.2s;"
+        onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.borderColor='#d1fae5'"
+        onmouseout="this.style.backgroundColor='#f9fafb'; this.style.borderColor='#f3f4f6'">
+        
+        <!-- Icono según tipo de actividad con fondo translúcido del color correspondiente -->
+        <div [style.backgroundColor]="act.color + '15'"
+             style="width: 2.75rem; height: 2.75rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
+          
+          <!-- Matricula icon (User Plus) -->
+          <svg *ngIf="act.type === 'matricula'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+          
+          <!-- Nota icon (Academic cap) -->
+          <svg *ngIf="act.type === 'nota'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+          </svg>
+          
+          <!-- Asistencia icon (Clipboard check) -->
+          <svg *ngIf="act.type === 'asistencia'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <path d="M9 11l3 3L22 4"></path>
+          </svg>
+          
+          <!-- Sistema/default check icon -->
+          <svg *ngIf="act.type === 'sistema'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.15rem;">
+            <p style="font-size: 0.9rem; font-weight: 600; color: #1f2937; margin: 0;">{{ act.title }}</p>
+            <span style="font-size: 0.75rem; color: #9ca3af; flex-shrink: 0;">{{ act.time_ago }}</span>
+          </div>
+          <p style="font-size: 0.825rem; color: #4b5563; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" [title]="act.description">
+            {{ act.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

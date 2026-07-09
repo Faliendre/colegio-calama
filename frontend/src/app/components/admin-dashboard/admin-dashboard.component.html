@@ -1,0 +1,414 @@
+<div class="min-h-screen animate-fade-in" style="background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);">
+  <!-- Header -->
+  <header style="
+  background:white;
+  box-shadow:0 1px 3px 0 rgba(0,0,0,0.08);
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:30;
+">
+    <div style="
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4.7rem;
+  ">
+      <!-- Logo y título -->
+      <div style="display: flex; align-items: center;">
+        <div style="
+        width: 3.5rem;
+        height: 3.5rem;
+        background: #fff;
+        border-radius: 0.9rem;
+        box-shadow:0 2px 7px rgba(55,100,65,.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right:1.1rem;
+        overflow: hidden;
+      ">
+          <img src="assets/logo_calama.png" alt="Logo Colegio Calama" style="
+                width: 92%; height: 92%;
+                object-fit: contain;
+                border-radius: 0.6rem;
+             ">
+        </div>
+        <div>
+          <h1 style="font-size: 1.55rem; font-weight: bold; color: #111827; margin: 0;">
+            Panel Administrador
+          </h1>
+          <p style="font-size: 1.04rem; color: #64748b; margin: 0; font-weight: 500;">
+            Colegio Nacional Calama
+          </p>
+        </div>
+      </div>
+      <!-- Usuario y salir -->
+      <div style="display: flex; align-items: center; gap: 1.2rem;">
+        <div style="text-align: right;">
+          <p style="font-size: 1.02rem; font-weight: 600; color: #102a43; margin: 0;">
+            {{ userName }}
+          </p>
+          <p style="font-size: 0.86rem; color: #6b7280; margin:0 0 0.08rem 0;">
+            Administrador
+          </p>
+        </div>
+        <button (click)="logout()" style="
+          background-color: #2d6a4f;
+          color: white;
+          padding: 0.5rem 1.25rem;
+          border-radius: 0.7rem;
+          border: none;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          box-shadow: 0 2px 8px rgba(60,90,70,0.11);
+          transition: background .17s;
+        " onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.1rem;" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Salir
+        </button>
+      </div>
+    </div>
+  </header>
+  <!-- Main Content -->
+  <main style="max-width: 80rem; margin: 0 auto; padding: 2rem 1rem;">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+      <!-- Card 1: Usuarios -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #3b82f6; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.95rem; color: #374151; margin: 0;">Total Usuarios</p>
+            <p style="font-size: 1.5rem; font-weight: 700; margin: 0;">{{ totalUsers }}</p>
+          </div>
+          <div style="background-color: #dbeafe; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #2563eb;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Estudiantes -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #1b4332; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.95rem; color: #374151; margin: 0;">Estudiantes</p>
+            <p style="font-size: 1.5rem; font-weight: 700; margin: 0;">{{ students }}</p>
+          </div>
+          <div style="background-color: #dcfce7; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #1b4332;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Profesores -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #a855f7; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.95rem; color: #374151; margin: 0;">Profesores</p>
+            <p style="font-size: 1.5rem; font-weight: 700; margin: 0;">{{ teachers }}</p>
+          </div>
+          <div style="background-color: #f3e8ff; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #9333ea;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Cursos -->
+      <div class="card-hover-effect"
+        style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; border-left: 4px solid #f97316; cursor: default;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p style="font-size: 0.95rem; color: #374151; margin: 0;">Cursos Activos</p>
+            <p style="font-size: 1.5rem; font-weight: 700; margin: 0;">{{ activeCourses }}</p>
+          </div>
+          <div style="background-color: #ffedd5; border-radius: 9999px; padding: 0.75rem;">
+            <svg style="width: 2rem; height: 2rem; color: #ea580c;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div
+      style="background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-bottom: 2rem;">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem;">Acciones Rápidas</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+
+        <!-- Botón Crear Usuario -->
+        <button (click)="navigateToUsers()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #d1fae5; border-radius: 0.5rem; background: #f0fdf4; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#dcfce7'; this.style.borderColor='#86efac'"
+          onmouseout="this.style.backgroundColor='#f0fdf4'; this.style.borderColor='#d1fae5'">
+          <div
+            style="background-color: #10b981; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestionar Usuarios</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Crear y administrar usuarios</p>
+          </div>
+        </button>
+
+        <!-- Botón Gestionar Cursos -->
+        <button (click)="navigateToCursos()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #dbeafe; border-radius: 0.5rem; background: #eff6ff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#dbeafe'; this.style.borderColor='#93c5fd'"
+          onmouseout="this.style.backgroundColor='#eff6ff'; this.style.borderColor='#dbeafe'">
+          <div
+            style="background-color: #3b82f6; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestionar Cursos</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Administrar cursos y paralelos</p>
+          </div>
+        </button>
+
+        <!-- Botón Gestionar Alumnos -->
+        <button (click)="navigateToAlumnos()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #ddd6fe; border-radius: 0.5rem; background: #f5f3ff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#ede9fe'; this.style.borderColor='#c4b5fd'"
+          onmouseout="this.style.backgroundColor='#f5f3ff'; this.style.borderColor='#ddd6fe'">
+          <div
+            style="background-color: #8b5cf6; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestionar Alumnos</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Registrar e inscribir estudiantes</p>
+          </div>
+        </button>
+
+        <!-- Botón Gestionar Matrículas -->
+        <button (click)="navigateToMatriculas()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #dbeafe; border-radius: 0.5rem; background: #eff6ff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#dbeafe'; this.style.borderColor='#93c5fd'"
+          onmouseout="this.style.backgroundColor='#eff6ff'; this.style.borderColor='#dbeafe'">
+          <div
+            style="background-color: #3b82f6; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestionar Matrículas</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Inscribir alumnos a cursos</p>
+          </div>
+        </button>
+
+        <!-- Botón Asignación de Profesores -->
+        <button (click)="navigateToAsignacionesProfesores()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #e0e7ff; border-radius: 0.5rem; background: #f0f4ff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#e0e7ff'; this.style.borderColor='#c7d2fe'"
+          onmouseout="this.style.backgroundColor='#f0f4ff'; this.style.borderColor='#e0e7ff'">
+          <div
+            style="background-color: #6366f1; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Asignación de Profesores</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Asignar profesores a materias</p>
+          </div>
+        </button>
+
+        <!-- Botón Gestionar Materias -->
+        <button (click)="navigateToMaterias()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #fce7f3; border-radius: 0.5rem; background: #fdf2f8; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#fce7f3'; this.style.borderColor='#fbcfe8'"
+          onmouseout="this.style.backgroundColor='#fdf2f8'; this.style.borderColor='#fce7f3'">
+          <div
+            style="background-color: #ec4899; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestionar Materias</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Crear asignaturas del colegio</p>
+          </div>
+        </button>
+
+        <!-- Botón Reporte de Asistencias -->
+        <button (click)="navigateToReporteAsistencias()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #fee2e2; border-radius: 0.5rem; background: #fef2f2; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#fee2e2'; this.style.borderColor='#fca5a5'"
+          onmouseout="this.style.backgroundColor='#fef2f2'; this.style.borderColor='#fee2e2'">
+          <div
+            style="background-color: #ef4444; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Reporte de Asistencias</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Consultar asistencias por curso</p>
+          </div>
+        </button>
+
+        <!-- Botón Reporte de Calificaciones -->
+        <button (click)="navigateToReporteCalificaciones()"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #dbeafe; border-radius: 0.5rem; background: #f0f9ff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#e0f2fe'; this.style.borderColor='#7dd3fc'"
+          onmouseout="this.style.backgroundColor='#f0f9ff'; this.style.borderColor='#dbeafe'">
+          <div
+            style="background-color: #2563eb; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Reporte de Calificaciones</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Consultar calificaciones por alumno</p>
+          </div>
+        </button>
+
+        <!-- Botón Acta de Calificaciones -->
+        <button (click)="navegarA('/admin/acta-calificaciones')"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #cffafe; border-radius: 0.5rem; background: #ecfeff; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#cffafe'; this.style.borderColor='#67e8f9'"
+          onmouseout="this.style.backgroundColor='#ecfeff'; this.style.borderColor='#cffafe'">
+          <div
+            style="background-color: #06b6d4; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Acta de Calificaciones</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Generar actas por curso</p>
+          </div>
+        </button>
+
+        <!-- Botón Gestión Académica -->
+        <button (click)="navegarA('/admin/gestion-academica')"
+          style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #fed7aa; border-radius: 0.5rem; background: #fffbeb; cursor: pointer; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#fef3c7'; this.style.borderColor='#fcd34d'"
+          onmouseout="this.style.backgroundColor='#fffbeb'; this.style.borderColor='#fed7aa'">
+          <div
+            style="background-color: #f59e0b; border-radius: 0.5rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <p style="font-weight: 600; color: #111827; margin: 0;">Gestión Académica</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Administrar períodos escolares</p>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 0.25rem;">Actividad Reciente</h2>
+      
+      <div *ngFor="let act of recentActivity"
+        style="display: flex; align-items: center; padding: 0.85rem 1rem; background-color: #f9fafb; border-radius: 0.75rem; border: 1px solid #f3f4f6; transition: all 0.2s;"
+        onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.borderColor='#d1fae5'"
+        onmouseout="this.style.backgroundColor='#f9fafb'; this.style.borderColor='#f3f4f6'">
+        
+        <!-- Icono según tipo de actividad con fondo translúcido del color correspondiente -->
+        <div [style.backgroundColor]="act.color + '15'"
+             style="width: 2.75rem; height: 2.75rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
+          
+          <!-- Matricula icon (User Plus) -->
+          <svg *ngIf="act.type === 'matricula'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+          
+          <!-- Nota icon (Academic cap) -->
+          <svg *ngIf="act.type === 'nota'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+          </svg>
+          
+          <!-- Asistencia icon (Clipboard check) -->
+          <svg *ngIf="act.type === 'asistencia'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <path d="M9 11l3 3L22 4"></path>
+          </svg>
+          
+          <!-- Sistema/default check icon -->
+          <svg *ngIf="act.type === 'sistema'" [style.color]="act.color" style="width: 1.35rem; height: 1.35rem;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.15rem;">
+            <p style="font-size: 0.9rem; font-weight: 600; color: #1f2937; margin: 0;">{{ act.title }}</p>
+            <span style="font-size: 0.75rem; color: #9ca3af; flex-shrink: 0;">{{ act.time_ago }}</span>
+          </div>
+          <p style="font-size: 0.825rem; color: #4b5563; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" [title]="act.description">
+            {{ act.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

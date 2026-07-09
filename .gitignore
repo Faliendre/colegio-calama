@@ -1,0 +1,38 @@
+# General
+node_modules/
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Backend (Laravel)
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/vendor/
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitignore
+backend/storage/framework/cache/data/*
+!backend/storage/framework/cache/data/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/testing/*
+!backend/storage/framework/testing/.gitignore
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitignore
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+backend/public/storage
+backend/public/hot
+backend/public/build
+backend/.phpunit.result.cache
+
+# Frontend (Angular)
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/public/build
+frontend/src/environments/environment.custom.ts
+frontend/.vscode/

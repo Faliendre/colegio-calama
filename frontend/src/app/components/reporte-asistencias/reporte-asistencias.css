@@ -1,0 +1,39 @@
+.presente {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.tarde {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.justificado {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.licencia {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.ausente {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.sin-registro {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-style: italic;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

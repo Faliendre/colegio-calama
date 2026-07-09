@@ -1,0 +1,191 @@
+<div style="padding: 2rem; background-color: #f9fafb; min-height: 100vh;">
+  <!-- Botón Volver -->
+  <div style="margin-bottom: 1.5rem;">
+    <button (click)="volverAlDashboard()" style="
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)'"
+      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Volver al Dashboard
+    </button>
+  </div>
+
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: bold; color: #111827; margin-bottom: 0.5rem;">
+        Promoción de Alumnos
+      </h1>
+      <p style="color: #6b7280;">Promover alumnos aprobados a una nueva gestión académica</p>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="successMessage"
+      style="margin-bottom: 1rem; padding: 1rem; background-color: #d1fae5; color: #065f46; border-radius: 0.5rem; border-left: 4px solid #10b981;">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage"
+      style="margin-bottom: 1rem; padding: 1rem; background-color: #fee2e2; color: #991b1b; border-radius: 0.5rem; border-left: 4px solid #ef4444;">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Información Gestión Actual -->
+    <div *ngIf="gestionActual"
+      style="background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1rem;">
+        Gestión Actual: {{ gestionActual.anio }}
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+        <div style="padding: 1rem; background-color: #f3f4f6; border-radius: 0.5rem;">
+          <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0;">Total Alumnos</p>
+          <p style="font-size: 2rem; font-weight: bold; color: #111827; margin: 0;">{{ totalAlumnos }}</p>
+        </div>
+        <div style="padding: 1rem; background-color: #d1fae5; border-radius: 0.5rem;">
+          <p style="color: #065f46; font-size: 0.875rem; margin: 0 0 0.5rem 0;">Aprobados (≥51)</p>
+          <p style="font-size: 2rem; font-weight: bold; color: #065f46; margin: 0;">{{ aprobados }}</p>
+        </div>
+        <div style="padding: 1rem; background-color: #fee2e2; border-radius: 0.5rem;">
+          <p style="color: #991b1b; font-size: 0.875rem; margin: 0 0 0.5rem 0;">Reprobados (<51)< /p>
+              <p style="font-size: 2rem; font-weight: bold; color: #991b1b; margin: 0;">{{ reprobados }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selección Gestión Destino -->
+    <div
+      style="background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1rem;">
+        Seleccionar Gestión de Destino
+      </h2>
+      <div style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div style="flex: 1;">
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+            Gestión Destino *
+          </label>
+          <select [(ngModel)]="gestionSeleccionada"
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+            <option [value]="null">Seleccione una gestión</option>
+            <option *ngFor="let gestion of gestiones" [value]="gestion.id">
+              {{ gestion.anio }}
+            </option>
+          </select>
+        </div>
+        <button (click)="ejecutarPromocion()" [disabled]="isLoading || !gestionSeleccionada" style="
+          padding: 0.75rem 2rem;
+          background-color: #2563eb;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        " [style.opacity]="isLoading || !gestionSeleccionada ? '0.5' : '1'"
+          [style.cursor]="isLoading || !gestionSeleccionada ? 'not-allowed' : 'pointer'"
+          onmouseover="if(!this.disabled) this.style.backgroundColor='#1d4ed8'"
+          onmouseout="if(!this.disabled) this.style.backgroundColor='#2563eb'">
+          {{ isLoading ? 'Procesando...' : 'Ejecutar Promoción' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de Alumnos -->
+    <div style="background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <h2 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1rem;">
+        Listado de Alumnos
+      </h2>
+
+      <!-- Barra de búsqueda -->
+      <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+        <div style="position: relative; flex: 1; max-width: 24rem;">
+          <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input type="text" [(ngModel)]="searchText" placeholder="Buscar por alumno, RUDE o curso..." 
+            style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #d1d5db; border-radius: 0.75rem; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;"
+            onfocus="this.style.borderColor='#2d6a4f'; this.style.boxShadow='0 0 0 3px rgba(45, 106, 79, 0.1)';"
+            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" style="text-align: center; padding: 2rem; color: #6b7280;">
+        Cargando...
+      </div>
+
+      <div *ngIf="!isLoading && filteredAlumnos.length > 0" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+          <thead>
+            <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: #374151;">Alumno</th>
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: #374151;">Curso Actual</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Promedio</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Estado</th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alumno of filteredAlumnos; let i = index"
+              [style.background-color]="i % 2 === 0 ? '#ffffff' : '#f9fafb'" style="border-bottom: 1px solid #e5e7eb;">
+              <td style="padding: 0.75rem; font-weight: 500; color: #111827;">{{ alumno.alumno_nombre }}</td>
+              <td style="padding: 0.75rem; color: #6b7280;">{{ alumno.curso_actual }}</td>
+              <td style="padding: 0.75rem; text-align: center; font-weight: 600;"
+                [style.color]="alumno.promedio >= 51 ? '#059669' : '#dc2626'">
+                {{ alumno.promedio }}
+              </td>
+              <td style="padding: 0.75rem; text-align: center;">
+                <span *ngIf="alumno.aprobado" style="
+                  padding: 0.25rem 0.75rem;
+                  background-color: #d1fae5;
+                  color: #065f46;
+                  border-radius: 9999px;
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                ">
+                  ✓ Aprobado
+                </span>
+                <span *ngIf="!alumno.aprobado" style="
+                  padding: 0.25rem 0.75rem;
+                  background-color: #fee2e2;
+                  color: #991b1b;
+                  border-radius: 9999px;
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                ">
+                  ✗ Reprobado
+                </span>
+              </td>
+              <td style="padding: 0.75rem; text-align: center; color: #6b7280; font-weight: 500;">
+                {{ alumno.accion }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!isLoading && filteredAlumnos.length === 0 && alumnos.length > 0" style="text-align: center; padding: 3rem; color: #6b7280;">
+        <p style="font-size: 1.125rem;">No se encontraron alumnos para la búsqueda</p>
+      </div>
+
+      <div *ngIf="!isLoading && alumnos.length === 0" style="text-align: center; padding: 3rem; color: #6b7280;">
+        <p style="font-size: 1.125rem;">No hay alumnos para promover</p>
+      </div>
+    </div>
+  </div>
+</div>

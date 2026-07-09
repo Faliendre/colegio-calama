@@ -1,0 +1,38 @@
+.aprobado {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.25rem 0;
+}
+
+.reprobado {
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+  padding: 0.25rem 0;
+}
+
+.pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  padding: 0.25rem 0;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+table {
+  font-size: 0.95rem;
+}
+
+th, td {
+  border: none;
+}

@@ -1,0 +1,253 @@
+<div class="min-h-screen" style="background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%); padding: 2rem;">
+  <div style="max-width: 90rem; margin: 0 auto;">
+    <!-- Botón Volver -->
+    <div style="margin-bottom: 1.5rem;">
+      <button (click)="volverAlDashboard()" style="
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)'"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Volver al Dashboard
+      </button>
+    </div>
+
+
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.875rem; font-weight: bold; color: #111827; margin: 0;">Gestión de Alumnos</h1>
+        <p style="color: #6b7280; margin-top: 0.25rem;">Administra el registro de estudiantes</p>
+      </div>
+      <button (click)="openCreateModal()"
+        style="background-color: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s;"
+        onmouseover="this.style.backgroundColor='#1b4332'" onmouseout="this.style.backgroundColor='#2d6a4f'">
+        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Nuevo Alumno
+      </button>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+      <div style="position: relative; flex: 1; max-width: 28rem;">
+        <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; pointer-events: none;">
+          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </span>
+        <input type="text" [(ngModel)]="searchText" placeholder="Buscar por nombre, RUDE o CI..." 
+          style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #d1d5db; border-radius: 0.75rem; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;"
+          onfocus="this.style.borderColor='#2d6a4f'; this.style.boxShadow='0 0 0 3px rgba(45, 106, 79, 0.1)';"
+          onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.02)';">
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="successMessage"
+      style="background-color: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage"
+      style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Tabla de alumnos -->
+    <div
+      style="background: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); overflow: hidden;">
+      <div *ngIf="isLoading" style="padding: 3rem; text-align: center;">
+        <p style="color: #6b7280;">Cargando alumnos...</p>
+      </div>
+
+      <div *ngIf="!isLoading" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead style="background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+            <tr>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">Código
+                RUDE</th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">CI
+              </th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">Nombre
+                Completo</th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">Fecha
+                Nac..</th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">Género
+              </th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">
+                Teléfono</th>
+              <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151; font-size: 0.875rem;">Estado
+              </th>
+              <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151; font-size: 0.875rem;">
+                Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alumno of filteredAlumnos" style="border-bottom: 1px solid #e5e7eb;">
+              <td style="padding: 1rem; color: #6b7280; font-family: monospace;">{{ alumno.codigo_rude }}</td>
+              <td style="padding: 1rem; color: #6b7280;">{{ alumno.ci || '-' }}</td>
+              <td style="padding: 1rem; color: #111827; font-weight: 500;">{{ alumno.nombre_completo }}</td>
+              <td style="padding: 1rem; color: #6b7280;">{{ alumno.fecha_nacimiento | date: 'dd/MM/yyyy' }}</td>
+              <td style="padding: 1rem; color: #6b7280;">{{ getGeneroLabel(alumno.genero) }}</td>
+              <td style="padding: 1rem; color: #6b7280;">{{ alumno.telefono || '-' }}</td>
+              <td style="padding: 1rem;">
+                <span [style]="getEstadoColor(alumno.activo)"
+                  style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
+                  {{ getEstadoBadge(alumno.activo) }}
+                </span>
+              </td>
+              <td style="padding: 1rem; text-align: center;">
+                <button (click)="openEditModal(alumno)"
+                  style="background-color: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; margin-right: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                  Editar
+                </button>
+                <button (click)="openDeleteModal(alumno)"
+                  style="background-color: #ef4444; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer; font-size: 0.875rem;">
+                  Desactivar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!isLoading && alumnos.length === 0" style="padding: 3rem; text-align: center;">
+        <p style="color: #6b7280;">No hay alumnos registrados</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear/Editar Alumno -->
+<div *ngIf="showModal"
+  style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50; overflow-y: auto;">
+  <div
+    style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 700px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); margin: 2rem;">
+    <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem;">
+      {{ isEditMode ? 'Editar Alumno' : 'Registrar Nuevo Alumno' }}
+    </h2>
+
+    <form (ngSubmit)="saveAlumno()">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+        <!-- Código RUDE -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Código RUDE *</label>
+          <input type="text" [(ngModel)]="currentAlumno.codigo_rude" name="codigo_rude" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- CI -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">CI</label>
+          <input type="text" [(ngModel)]="currentAlumno.ci" name="ci"
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- Nombre -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Nombre *</label>
+          <input type="text" [(ngModel)]="currentAlumno.nombre" name="nombre" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Apellido Paterno
+            *</label>
+          <input type="text" [(ngModel)]="currentAlumno.apellido_paterno" name="apellido_paterno" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- Apellido Materno -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Apellido Materno
+            *</label>
+          <input type="text" [(ngModel)]="currentAlumno.apellido_materno" name="apellido_materno" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Fecha de Nacimiento
+            *</label>
+          <input type="date" [(ngModel)]="currentAlumno.fecha_nacimiento" name="fecha_nacimiento" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+
+        <!-- Género -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Género *</label>
+          <select [(ngModel)]="currentAlumno.genero" name="genero" required
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+
+        <!-- Teléfono -->
+        <div>
+          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Teléfono</label>
+          <input type="text" [(ngModel)]="currentAlumno.telefono" name="telefono"
+            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem;">
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div style="margin-top: 1rem;">
+        <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Dirección</label>
+        <textarea [(ngModel)]="currentAlumno.direccion" name="direccion" rows="2"
+          style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; resize: vertical;"></textarea>
+      </div>
+
+      <!-- Botones -->
+      <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+        <button type="button" (click)="closeModal()"
+          style="background-color: #e5e7eb; color: #374151; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+          Cancelar
+        </button>
+        <button type="submit"
+          style="background-color: #2d6a4f; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+          {{ isEditMode ? 'Actualizar' : 'Registrar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Confirmar Desactivación -->
+<div *ngIf="showDeleteModal"
+  style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50;">
+  <div
+    style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+    <h2 style="font-size: 1.5rem; font-weight: bold; color: #dc2626; margin-bottom: 1rem;">Confirmar Desactivación</h2>
+    <p style="color: #6b7280; margin-bottom: 1.5rem;">
+      ¿Está seguro de que desea desactivar a <strong>{{ alumnoToDelete?.nombre_completo }}</strong>?
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+      <button (click)="closeDeleteModal()"
+        style="background-color: #e5e7eb; color: #374151; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+        Cancelar
+      </button>
+      <button (click)="confirmDelete()"
+        style="background-color: #dc2626; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+        Desactivar
+      </button>
+    </div>
+  </div>
+</div>
