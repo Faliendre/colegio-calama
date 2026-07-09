@@ -16,9 +16,8 @@ else
 fi
 
 # Clear and cache configurations so runtime env variables are correctly cached
-echo "Caching Laravel configuration, routes, and views..."
+echo "Caching Laravel configuration and views..."
 php artisan config:cache
-php artisan route:cache
 php artisan view:cache
 
 # Start the actual Apache process in the foreground
