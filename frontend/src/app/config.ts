@@ -3,8 +3,7 @@
  * Detecta automáticamente si el entorno es local o de producción en la nube.
  */
 export const CONFIG = {
-  // Cambia esta URL por la URL real de tu servicio web en Render una vez que esté desplegado.
-  productionApiUrl: 'https://colegio-calama-backend.onrender.com/api',
+  productionApiUrl: 'https://colegio-calama.onrender.com/api',
   localApiUrl: 'http://localhost:8000/api',
 
   get apiUrl(): string {
