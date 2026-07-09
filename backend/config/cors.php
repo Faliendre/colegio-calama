@@ -5,11 +5,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'], // Angular
-    // 'allowed_origins' => [
-    //     'http://localhost:4200',
-    //     'http://192.168.3.57:4200'
-    // ],
+    'allowed_origins' => [
+        'http://localhost:4200',
+        'https://colegio-calama.vercel.app',
+    ],
 
 
 
