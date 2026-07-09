@@ -46,15 +46,16 @@
 
     <!-- Filtros -->
     <div
-      style="background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 1rem; align-items: flex-end;">
+      style="background: white; border-radius: 1rem; padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0, 0, 0, 0.03);">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
         <!-- Seleccionar Curso -->
         <div>
-          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
             Curso *
           </label>
           <select [(ngModel)]="cursoSeleccionado" name="curso" required
-            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+            style="height: 3rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\'%234b5563\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/><path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25rem;">
             <option [value]="null">Seleccione un curso</option>
             <option *ngFor="let curso of cursos" [value]="curso.id">
               {{ curso.nombre_completo }}
@@ -64,11 +65,12 @@
 
         <!-- Gestión Académica -->
         <div>
-          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
             Gestión Académica
           </label>
           <select [(ngModel)]="gestionSeleccionada" name="gestion"
-            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+            style="height: 3rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\'%234b5563\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/><path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25rem;">
             <option [value]="null">Gestión activa</option>
             <option *ngFor="let gestion of gestiones" [value]="gestion.id">
               {{ gestion.anio }}
@@ -78,30 +80,53 @@
 
         <!-- Fecha Inicio -->
         <div>
-          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
             Fecha Inicio *
           </label>
           <input type="date" [(ngModel)]="fechaInicio" name="fechaInicio"
-            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+            style="height: 3rem;">
         </div>
 
         <!-- Fecha Fin -->
         <div>
-          <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.875rem; color: #4b5563; margin-bottom: 0.5rem;">
             Fecha Fin *
           </label>
           <input type="date" [(ngModel)]="fechaFin" name="fechaFin"
-            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition duration-200"
+            style="height: 3rem;">
         </div>
 
         <!-- Botones -->
-        <div style="display: flex; gap: 0.5rem;">
-          <button (click)="generarReporte()" [disabled]="isLoading"
-            style="padding: 0.75rem 1.5rem; background-color: #2563eb; color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer;">
+        <div style="display: flex; gap: 0.5rem; width: 100%;">
+          <button (click)="generarReporte()" [disabled]="isLoading" style="
+            flex: 1;
+            height: 3rem;
+            background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(45, 106, 79, 0.15);
+            transition: all 0.2s;
+          " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 10px rgba(45, 106, 79, 0.2)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(45, 106, 79, 0.15)'">
             {{ isLoading ? 'Generando...' : 'Generar' }}
           </button>
-          <button (click)="limpiar()"
-            style="padding: 0.75rem 1.5rem; background-color: #6b7280; color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer;">
+          <button (click)="limpiar()" style="
+            flex: 1;
+            height: 3rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+          " onmouseover="this.style.backgroundColor='#e5e7eb'; this.style.color='#1f2937'"
+            onmouseout="this.style.backgroundColor='#f3f4f6'; this.style.color='#4b5563'">
             Limpiar
           </button>
         </div>
