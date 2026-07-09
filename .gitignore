@@ -36,3 +36,5 @@ frontend/dist/
 frontend/public/build
 frontend/src/environments/environment.custom.ts
 frontend/.vscode/
+.vercel
+.env*
