@@ -456,6 +456,22 @@ div[style*="background-color:#fee2e2"]::before {
   }
 }
 
+/* Hacer que todos los encabezados de las vistas sean responsivos en celulares */
+@media (max-width: 768px) {
+  div[style*="display: flex"][style*="justify-content: space-between"],
+  div[style*="display:flex"][style*="justify-content:space-between"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  /* Evitar desbordamiento en grupos de botones en celulares */
+  div[style*="display: flex"][style*="gap:"],
+  div[style*="display:flex"][style*="gap:"] {
+    flex-wrap: wrap !important;
+  }
+}
+
 
 
 
