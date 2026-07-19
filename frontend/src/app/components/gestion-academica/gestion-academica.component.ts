@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GestionAcademicaService, GestionAcademica } from '../../services/gestion-academica.service';
+import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,7 +27,8 @@ export class GestionAcademicaComponent implements OnInit {
 
   constructor(
     private gestionService: GestionAcademicaService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -56,50 +58,57 @@ export class GestionAcademicaComponent implements OnInit {
     this.isLoading = true;
     this.gestionService.crearGestion(this.nuevaGestion).subscribe({
       next: (response) => {
-        this.successMessage = response.message;
+        this.alertService.alert(response.message, 'success');
         this.mostrarFormulario = false;
         this.cargarGestiones();
         this.limpiarFormulario();
         this.isLoading = false;
-        setTimeout(() => this.successMessage = '', 3000);
       },
       error: (error) => {
-        this.errorMessage = error.error.message || 'Error al crear gestión';
+        this.alertService.alert(error.error.message || 'Error al crear gestión', 'error');
         this.isLoading = false;
       }
     });
   }
 
-  activarGestion(id: number): void {
-    if (!confirm('¿Está seguro de activar esta gestión académica? Se desactivarán las demás.')) {
+  async activarGestion(id: number): Promise<void> {
+    const confirmado = await this.alertService.confirm(
+      '¿Está seguro de activar esta gestión académica? Se desactivarán las demás.',
+      'Activar Gestión Académica'
+    );
+
+    if (!confirmado) {
       return;
     }
 
     this.gestionService.activarGestion(id).subscribe({
       next: (response) => {
-        this.successMessage = response.message;
+        this.alertService.alert(response.message, 'success');
         this.cargarGestiones();
-        setTimeout(() => this.successMessage = '', 3000);
       },
       error: (error) => {
-        this.errorMessage = 'Error al activar gestión';
+        this.alertService.alert('Error al activar gestión', 'error');
       }
     });
   }
 
-  cerrarGestion(id: number): void {
-    if (!confirm('¿Está seguro de cerrar esta gestión académica?')) {
+  async cerrarGestion(id: number): Promise<void> {
+    const confirmado = await this.alertService.confirm(
+      '¿Está seguro de cerrar esta gestión académica?',
+      'Cerrar Gestión Académica'
+    );
+
+    if (!confirmado) {
       return;
     }
 
     this.gestionService.cerrarGestion(id).subscribe({
       next: (response) => {
-        this.successMessage = response.message;
+        this.alertService.alert(response.message, 'success');
         this.cargarGestiones();
-        setTimeout(() => this.successMessage = '', 3000);
       },
       error: (error) => {
-        this.errorMessage = 'Error al cerrar gestión';
+        this.alertService.alert('Error al cerrar gestión', 'error');
       }
     });
   }

@@ -7,6 +7,8 @@ import { CursoService, Curso } from '../../services/curso.service';
 import { Router } from '@angular/router';
 
 
+import { AlertService } from '../../services/alert.service';
+
 @Component({
   selector: 'app-matricula-management',
   standalone: true,
@@ -55,7 +57,8 @@ export class MatriculaManagementComponent implements OnInit {
     private matriculaService: MatriculaService,
     private alumnoService: AlumnoService,
     private cursoService: CursoService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -135,7 +138,7 @@ export class MatriculaManagementComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar matrículas:', error);
-        this.errorMessage = 'Error al cargar la lista de matrículas';
+        this.alertService.alert('Error al cargar la lista de matrículas', 'error');
         this.isLoading = false;
       }
     });
@@ -166,48 +169,55 @@ export class MatriculaManagementComponent implements OnInit {
 
   saveMatricula(): void {
     if (!this.currentMatricula.alumno_id || !this.currentMatricula.curso_id) {
-      this.errorMessage = 'Debe seleccionar un alumno y un curso';
+      this.alertService.alert('Debe seleccionar un alumno y un curso', 'error');
       return;
     }
 
     this.matriculaService.createMatricula(this.currentMatricula).subscribe({
       next: (response) => {
-        this.successMessage = 'Matrícula registrada exitosamente';
+        this.alertService.alert('Matrícula registrada exitosamente', 'success');
         this.loadMatriculas();
         this.closeModal();
-        setTimeout(() => this.successMessage = '', 3000);
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Error al registrar la matrícula';
+        this.alertService.alert(error.error?.message || 'Error al registrar la matrícula', 'error');
       }
     });
   }
 
-  cambiarEstado(matricula: Matricula, nuevoEstado: string): void {
-    if (confirm(`¿Está seguro de cambiar el estado a "${nuevoEstado}"?`)) {
+  async cambiarEstado(matricula: Matricula, nuevoEstado: string): Promise<void> {
+    const confirmado = await this.alertService.confirm(
+      `¿Está seguro de cambiar el estado a "${nuevoEstado}"?`,
+      'Confirmar Cambio de Estado'
+    );
+
+    if (confirmado) {
       this.matriculaService.updateEstado(matricula.id!, nuevoEstado).subscribe({
         next: () => {
-          this.successMessage = 'Estado actualizado exitosamente';
+          this.alertService.alert('Estado actualizado exitosamente', 'success');
           this.loadMatriculas();
-          setTimeout(() => this.successMessage = '', 3000);
         },
         error: (error) => {
-          this.errorMessage = 'Error al actualizar el estado';
+          this.alertService.alert('Error al actualizar el estado', 'error');
         }
       });
     }
   }
 
-  deleteMatricula(matricula: Matricula): void {
-    if (confirm(`¿Está seguro de eliminar la matrícula de ${matricula.alumno}?`)) {
+  async deleteMatricula(matricula: Matricula): Promise<void> {
+    const confirmado = await this.alertService.confirm(
+      `¿Está seguro de eliminar la matrícula de ${matricula.alumno}?`,
+      'Confirmar Eliminación de Matrícula'
+    );
+
+    if (confirmado) {
       this.matriculaService.deleteMatricula(matricula.id!).subscribe({
         next: () => {
-          this.successMessage = 'Matrícula eliminada exitosamente';
+          this.alertService.alert('Matrícula eliminada exitosamente', 'success');
           this.loadMatriculas();
-          setTimeout(() => this.successMessage = '', 3000);
         },
         error: (error) => {
-          this.errorMessage = 'Error al eliminar la matrícula';
+          this.alertService.alert('Error al eliminar la matrícula', 'error');
         }
       });
     }

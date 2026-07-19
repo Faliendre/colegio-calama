@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../services/alert.service';
 import { PromocionService } from '../../services/promocion.service';
 import { GestionAcademicaService, GestionAcademica } from '../../services/gestion-academica.service';
 import { Router } from '@angular/router';
@@ -42,7 +43,8 @@ export class PromocionAlumnosComponent implements OnInit {
   constructor(
     private promocionService: PromocionService,
     private gestionService: GestionAcademicaService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -83,26 +85,31 @@ export class PromocionAlumnosComponent implements OnInit {
     this.reprobados = this.totalAlumnos - this.aprobados;
   }
 
-  ejecutarPromocion(): void {
+  async ejecutarPromocion(): Promise<void> {
     if (!this.gestionSeleccionada) {
       this.errorMessage = 'Seleccione la gestión de destino';
       return;
     }
 
-    if (!confirm(`¿Está seguro de promover ${this.aprobados} alumnos y repetir ${this.reprobados} alumnos a la gestión seleccionada?`)) {
+    const confirmado = await this.alertService.confirm(
+      `¿Está seguro de promover ${this.aprobados} alumnos y repetir ${this.reprobados} alumnos a la gestión seleccionada?`,
+      'Confirmar Promoción de Alumnos'
+    );
+
+    if (!confirmado) {
       return;
     }
 
     this.isLoading = true;
     this.promocionService.ejecutarPromocion(this.gestionSeleccionada, this.alumnos).subscribe({
       next: (response) => {
-        this.successMessage = `Promoción exitosa: ${response.promocionados} promocionados, ${response.repetidores} repetidores`;
+        this.alertService.alert(`Promoción exitosa: ${response.promocionados} promocionados, ${response.repetidores} repetidores`, 'success');
         setTimeout(() => {
           this.router.navigate(['/admin/gestion-academica']);
         }, 3000);
       },
       error: (error) => {
-        this.errorMessage = 'Error al ejecutar promoción';
+        this.alertService.alert('Error al ejecutar promoción', 'error');
         this.isLoading = false;
       }
     });
