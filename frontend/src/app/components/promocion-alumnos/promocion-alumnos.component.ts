@@ -26,9 +26,9 @@ export class PromocionAlumnosComponent implements OnInit {
     if (!this.searchText) {
       return this.alumnos;
     }
-    const search = this.searchText.toLowerCase();
+    const search = this.searchText.toLowerCase().trim();
     return this.alumnos.filter(a => 
-      (a.nombre_completo && a.nombre_completo.toLowerCase().includes(search)) ||
+      (a.alumno_nombre && a.alumno_nombre.toLowerCase().includes(search)) ||
       (a.codigo_rude && a.codigo_rude.toLowerCase().includes(search)) ||
       (a.curso_actual && a.curso_actual.toLowerCase().includes(search))
     );
