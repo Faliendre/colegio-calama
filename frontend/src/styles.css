@@ -465,9 +465,9 @@ div[style*="background-color:#fee2e2"]::before {
     gap: 1rem !important;
   }
 
-  /* Evitar desbordamiento en grupos de botones en celulares */
-  div[style*="display: flex"][style*="gap:"],
-  div[style*="display:flex"][style*="gap:"] {
+  /* Evitar desbordamiento en grupos de botones en celulares (excluyendo columnas) */
+  div[style*="display: flex"][style*="gap:"]:not([style*="flex-direction: column"]):not([style*="flex-direction:column"]),
+  div[style*="display:flex"][style*="gap:"]:not([style*="flex-direction: column"]):not([style*="flex-direction:column"]) {
     flex-wrap: wrap !important;
   }
 }
